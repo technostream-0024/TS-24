@@ -429,16 +429,16 @@ nav.links.mobile-open{
     <div class="rail" data-branch="ce">
       <div class="rail-label"><span class="code">RAIL / CE</span><h4>Computer Engineering</h4></div>
       <div class="rail-track">
-        <button class="node-btn" data-event="ce-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Computer Engg. Paper Presentation</span></button>
-        <button class="node-btn" data-event="ce-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Computer Engg. Technical Quiz</span></button>
+        <button class="node-btn" data-event="co-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Computer Engg. Paper Presentation</span></button>
+        <button class="node-btn" data-event="co-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Computer Engg. Technical Quiz</span></button>
       </div>
     </div>
 
     <div class="rail" data-branch="cv">
       <div class="rail-label"><span class="code">RAIL / CV</span><h4>Civil Engineering</h4></div>
       <div class="rail-track">
-        <button class="node-btn" data-event="cv-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Civil Engg. Paper Presentation</span></button>
-        <button class="node-btn" data-event="cv-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Civil Engg. Technical Quiz</span></button>
+        <button class="node-btn" data-event="ce-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Civil Engg. Paper Presentation</span></button>
+        <button class="node-btn" data-event="ce-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Civil Engg. Technical Quiz</span></button>
       </div>
     </div>
 
@@ -586,10 +586,10 @@ nav.links.mobile-open{
 
 <script>
 const EVENTS = {
-  "ce-paper": {tag:"Computer Engineering · Paper Presentation", title:"Computer Engg. Paper Presentation", format:"Individual or team of up to 2. Participants present a technical paper on a topic within computer science and emerging technologies, followed by a Q&A round with the judging panel.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Computer Engg. seminar hall", rules:["Abstract must be submitted in advance for shortlisting.","Presentation limited to 10 minutes, strictly timed.","PowerPoint or PDF only; bring your own laptop as backup.","Plagiarism or previously published papers will be disqualified."]},
-  "ce-quiz": {tag:"Computer Engineering · Quiz", title:"Computer Engg. Technical Quiz", format:"A multi-round technical quiz covering programming fundamentals, computer networks, data structures and current technology trends.", team:"2 members per team", duration:"Prelims + finals", venue:"Computer Engg. lab / classroom", rules:["Prelims is a written round; top teams advance to the final buzzer round.","No mobile phones or reference material during the quiz.","Quizmaster's decision on scoring is final.","Tie-breaker questions apply in case of a level score."]},
-  "cv-paper": {tag:"Civil Engineering · Paper Presentation", title:"Civil Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on structural engineering, construction technology, sustainability or related civil engineering themes.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Civil Engg. seminar hall", rules:["Abstract submission required before the shortlisting deadline.","Strictly 10-minute presentation window.","Use of real site data or case studies is encouraged.","Original work only; cite all references used."]},
-  "cv-quiz": {tag:"Civil Engineering · Quiz", title:"Civil Engg. Technical Quiz", format:"Rounds covering construction materials, surveying, structural concepts and general civil engineering awareness.", team:"2 members per team", duration:"Prelims + finals", venue:"Civil Engg. lab / classroom", rules:["Written prelim round followed by an on-stage final.","No reference books or phones allowed during rounds.","Rapid-fire round decided by buzzer order.","Judges'/quizmaster's decision is final."]},
+  "co-paper": {tag:"Computer Engineering · Paper Presentation", title:"Computer Engg. Paper Presentation", format:"Individual or team of up to 2. Participants present a technical paper on a topic within computer science and emerging technologies, followed by a Q&A round with the judging panel.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Computer Engg. seminar hall", rules:["Abstract must be submitted in advance for shortlisting.","Presentation limited to 10 minutes, strictly timed.","PowerPoint or PDF only; bring your own laptop as backup.","Plagiarism or previously published papers will be disqualified."]},
+  "co-quiz": {tag:"Computer Engineering · Quiz", title:"Computer Engg. Technical Quiz", format:"A multi-round technical quiz covering programming fundamentals, computer networks, data structures and current technology trends.", team:"2 members per team", duration:"Prelims + finals", venue:"Computer Engg. lab / classroom", rules:["Prelims is a written round; top teams advance to the final buzzer round.","No mobile phones or reference material during the quiz.","Quizmaster's decision on scoring is final.","Tie-breaker questions apply in case of a level score."]},
+  "ce-paper": {tag:"Civil Engineering · Paper Presentation", title:"Civil Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on structural engineering, construction technology, sustainability or related civil engineering themes.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Civil Engg. seminar hall", rules:["Abstract submission required before the shortlisting deadline.","Strictly 10-minute presentation window.","Use of real site data or case studies is encouraged.","Original work only; cite all references used."]},
+  "ce-quiz": {tag:"Civil Engineering · Quiz", title:"Civil Engg. Technical Quiz", format:"Rounds covering construction materials, surveying, structural concepts and general civil engineering awareness.", team:"2 members per team", duration:"Prelims + finals", venue:"Civil Engg. lab / classroom", rules:["Written prelim round followed by an on-stage final.","No reference books or phones allowed during rounds.","Rapid-fire round decided by buzzer order.","Judges'/quizmaster's decision is final."]},
   "ex-paper": {tag:"Electronics Engineering · Paper Presentation", title:"Electronics Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on electronics, embedded systems, communication or allied topics.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Electronics Engg. seminar hall", rules:["Abstract must be submitted for shortlisting before the deadline.","10-minute time limit, strictly enforced.","Working models or demos may be shown alongside the paper.","Papers must be the participants' original work."]},
   "ex-quiz": {tag:"Electronics Engineering · Quiz", title:"Electronics Engg. Technical Quiz", format:"Covers circuit theory, semiconductor devices, communication systems and current electronics trends across multiple rounds.", team:"2 members per team", duration:"Prelims + finals", venue:"Electronics Engg. lab / classroom", rules:["Written prelim round; shortlisted teams proceed to the final.","No calculators, phones or notes permitted.","Buzzer round order decided by first correct response.","Quizmaster's ruling on all answers is final."]},
   "blind-coding": {tag:"Open Event · Coding", title:"Blind Coding", format:"Participants write code with the monitor switched off (or screen hidden), relying on logic and memory alone, then run it to check correctness once time is up.", team:"1 participant", duration:"20–30 minutes", venue:"Computer lab", rules:["Screen/monitor will be turned off or covered during the coding window.","Language choice (C / C++ / Python / Java) to be confirmed at registration.","Code is compiled and evaluated only after the blind-coding time ends.","Scoring is based on correct output and minimal syntax errors."]},
@@ -667,7 +667,7 @@ const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxb0c0HjyfOQD
 
 const fEventSelect = document.getElementById('fEvent');
 const orderedEventKeys = [
-  "ce-paper","ce-quiz","cv-paper","cv-quiz","ex-paper","ex-quiz",
+  "co-paper","co-quiz","ce-paper","ce-quiz","ex-paper","ex-quiz",
   ...OPEN_KEYS
 ];
 orderedEventKeys.forEach(key => {
