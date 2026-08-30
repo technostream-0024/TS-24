@@ -388,7 +388,7 @@ nav.links.mobile-open{
 <section class="about" id="about">
   <div class="wrap about-grid">
     <div>
-      <div class="eyebrow">About the Event-Technostream</div>
+      <div class="eyebrow">About the festival</div>
       <h2 class="sec-title">A single board, three branches feeding in</h2>
       <p class="sec-desc">Technostream is the technical event festival of Dr. Panjabrao Deshmukh Polytechnic, Amravati, conducted under Shri Shivaji Shikshan Sanstha. Students from Computer Engineering, Civil Engineering and Electronics Engineering compete in branch-specific and open technical events designed to test applied knowledge, speed and problem-solving under pressure.</p>
       <p class="sec-desc">Every event below is organised the way a circuit is drawn: a main bus (Technostream) with three department rails branching off it, plus a set of open events any participant can join regardless of branch.</p>
@@ -410,7 +410,7 @@ nav.links.mobile-open{
           <div class="sub">Host Institute · Technostream</div>
         </div>
       </div>
-      <p>Diploma programmes in Computer, Civil and Electronics Engineering, hosting Technostream as its annual State Level Technical meet.</p>
+      <p>Diploma programmes in Computer, Civil and Electronics Engineering, hosting Technostream as its annual State Level Technical Events.</p>
     </div>
   </div>
 </section>
@@ -479,13 +479,25 @@ nav.links.mobile-open{
         <p>Fill this in to register. Entries are saved straight to the Technostream Google Sheet — no coordinator hand-off needed.</p>
 
         <form class="reg-form" id="regForm">
+          <div class="field">
+            <label for="fInstitute">Institute name</label>
+            <input id="fInstitute" name="institute" type="text" list="instituteList" placeholder="Start typing or pick from the list" required>
+            <datalist id="instituteList">
+              <option value="Dr. Panjabrao Deshmukh Polytechnic, Amravati">
+              <option value="Dr. Panjabrao Deshmukh Girl's Polytechnic, Amravati">
+              <option value="Govt. Polytechnic, Amravati">
+              <option value="Govt. Polytechnic, Achalpur">
+              <option value="Dr. Rajendra Gode Polytechnic, Amravati">
+              <option value="Takshashila Polytechnic, Amravati">
+            </datalist>
+          </div>
           <div class="field-row">
             <div class="field">
               <label for="fName">Full name</label>
               <input id="fName" name="fullName" type="text" required autocomplete="name">
             </div>
             <div class="field">
-              <label for="fEnroll">Enrollment / roll no.</label>
+              <label for="fEnroll">Enrollment no.</label>
               <input id="fEnroll" name="enrollment" type="text" required>
             </div>
           </div>
@@ -542,12 +554,10 @@ nav.links.mobile-open{
         </form>
       </div>
       <div class="contact-card">
-        
-        <div class="row"><span>Coordinator</span><span>Prof.R.H.Rathod, 9422262734</span></div>
-        <div class="row"><span>Comp.Engg.Student coordinator,</span><span> ABCDEFGHIJK, 0000000000 </span></div>
-        <div class="row"><span>Civil Engg.Student coordinator</span><span> ABCDEFGHIJK, 0000000000 </span></div>
-        <div class="row"><span>Electronics Engg.Student coordinator</span><span> ABCDEFGHIJK, 0000000000 </span></div>
-        
+        <div class="row"><span>Coordinator</span><span>Prof.R.H.Rathod</span></div>
+        <div class="row"><span>CO Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
+        <div class="row"><span>CR Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
+        <div class="row"><span>EX Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
       </div>
     </div>
   </div>
@@ -656,7 +666,7 @@ document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(
 /* ---------------------------------------------------------------
    GOOGLE SHEET BACKEND
    1. Create a Google Sheet with header row:
-      Timestamp | Full Name | Enrollment No | Branch | Semester | Mobile | Email | Event | Receipt No | Amount | Team Members
+      Timestamp | Institute | Full Name | Enrollment No | Branch | Semester | Mobile | Email | Event | Receipt No | Amount | Team Members
    2. In that Sheet: Extensions -> Apps Script, paste the doPost script
       from the setup notes shared alongside this file, then
       Deploy -> New deployment -> Web app
