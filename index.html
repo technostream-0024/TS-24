@@ -410,7 +410,7 @@ nav.links.mobile-open{
           <div class="sub">Host Institute · Technostream</div>
         </div>
       </div>
-      <p>Diploma programmes in Computer, Civil and Electronics Engineering, hosting Technostream as its annual State Level Technical Events.</p>
+      <p>Diploma programmes in Computer, Civil and Electronics Engineering, hosting Technostream as its annual inter-branch technical meet.</p>
     </div>
   </div>
 </section>
@@ -429,16 +429,16 @@ nav.links.mobile-open{
     <div class="rail" data-branch="ce">
       <div class="rail-label"><span class="code">RAIL / CE</span><h4>Computer Engineering</h4></div>
       <div class="rail-track">
-        <button class="node-btn" data-event="co-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Computer Engg. Paper Presentation</span></button>
-        <button class="node-btn" data-event="co-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Computer Engg. Technical Quiz</span></button>
+        <button class="node-btn" data-event="ce-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Computer Engg. Paper Presentation</span></button>
+        <button class="node-btn" data-event="ce-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Computer Engg. Technical Quiz</span></button>
       </div>
     </div>
 
     <div class="rail" data-branch="cv">
       <div class="rail-label"><span class="code">RAIL / CV</span><h4>Civil Engineering</h4></div>
       <div class="rail-track">
-        <button class="node-btn" data-event="ce-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Civil Engg. Paper Presentation</span></button>
-        <button class="node-btn" data-event="ce-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Civil Engg. Technical Quiz</span></button>
+        <button class="node-btn" data-event="cv-paper"><span class="pad"></span><span class="tag">Paper Presentation</span><span class="name">Civil Engg. Paper Presentation</span></button>
+        <button class="node-btn" data-event="cv-quiz"><span class="pad"></span><span class="tag">Quiz</span><span class="name">Civil Engg. Technical Quiz</span></button>
       </div>
     </div>
 
@@ -497,7 +497,7 @@ nav.links.mobile-open{
               <input id="fName" name="fullName" type="text" required autocomplete="name">
             </div>
             <div class="field">
-              <label for="fEnroll">Enrollment no.</label>
+              <label for="fEnroll">Enrollment / roll no.</label>
               <input id="fEnroll" name="enrollment" type="text" required>
             </div>
           </div>
@@ -534,13 +534,21 @@ nav.links.mobile-open{
           </div>
           <div class="field-row">
             <div class="field">
-              <label for="fReceipt">Receipt no.</label>
-              <input id="fReceipt" name="receiptNo" type="text" placeholder="e.g. 00123" required>
+              <label for="fCoordinator">Coordinator</label>
+              <select id="fCoordinator" name="coordinator" required>
+                <option value="" disabled selected>Select coordinator</option>
+              </select>
             </div>
             <div class="field">
               <label for="fAmount">Amount paid (₹)</label>
               <input id="fAmount" name="amount" type="number" min="0" step="1" placeholder="e.g. 100" required>
             </div>
+          </div>
+          <div class="field">
+            <label for="fReceipt">Receipt no.</label>
+            <select id="fReceipt" name="receiptNo" required disabled>
+              <option value="" disabled selected>Select a coordinator first</option>
+            </select>
           </div>
           <div class="field">
             <label for="fTeam">Team members (if any)</label>
@@ -554,10 +562,11 @@ nav.links.mobile-open{
         </form>
       </div>
       <div class="contact-card">
-        <div class="row"><span>Coordinator</span><span>Prof.R.H.Rathod</span></div>
-        <div class="row"><span>CO Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
-        <div class="row"><span>CR Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
-        <div class="row"><span>EX Student coordinator</span><span>Student-0000000000, Student-0000000000</span></div>
+        <div class="row"><span>Institute</span><span>DRPDP, Amravati</span></div>
+        <div class="row"><span>Sanstha</span><span>Shri Shivaji Shikshan Sanstha</span></div>
+        <div class="row"><span>Festival</span><span>Technostream</span></div>
+        <div class="row"><span>Contact</span><span>Add coordinator details here</span></div>
+        <div class="row"><span>Data stored in</span><span>Google Sheet</span></div>
       </div>
     </div>
   </div>
@@ -596,10 +605,10 @@ nav.links.mobile-open{
 
 <script>
 const EVENTS = {
-  "co-paper": {tag:"Computer Engineering · Paper Presentation", title:"Computer Engg. Paper Presentation", format:"Individual or team of up to 2. Participants present a technical paper on a topic within computer science and emerging technologies, followed by a Q&A round with the judging panel.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Computer Engg. seminar hall", rules:["Abstract must be submitted in advance for shortlisting.","Presentation limited to 10 minutes, strictly timed.","PowerPoint or PDF only; bring your own laptop as backup.","Plagiarism or previously published papers will be disqualified."]},
-  "co-quiz": {tag:"Computer Engineering · Quiz", title:"Computer Engg. Technical Quiz", format:"A multi-round technical quiz covering programming fundamentals, computer networks, data structures and current technology trends.", team:"2 members per team", duration:"Prelims + finals", venue:"Computer Engg. lab / classroom", rules:["Prelims is a written round; top teams advance to the final buzzer round.","No mobile phones or reference material during the quiz.","Quizmaster's decision on scoring is final.","Tie-breaker questions apply in case of a level score."]},
-  "ce-paper": {tag:"Civil Engineering · Paper Presentation", title:"Civil Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on structural engineering, construction technology, sustainability or related civil engineering themes.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Civil Engg. seminar hall", rules:["Abstract submission required before the shortlisting deadline.","Strictly 10-minute presentation window.","Use of real site data or case studies is encouraged.","Original work only; cite all references used."]},
-  "ce-quiz": {tag:"Civil Engineering · Quiz", title:"Civil Engg. Technical Quiz", format:"Rounds covering construction materials, surveying, structural concepts and general civil engineering awareness.", team:"2 members per team", duration:"Prelims + finals", venue:"Civil Engg. lab / classroom", rules:["Written prelim round followed by an on-stage final.","No reference books or phones allowed during rounds.","Rapid-fire round decided by buzzer order.","Judges'/quizmaster's decision is final."]},
+  "ce-paper": {tag:"Computer Engineering · Paper Presentation", title:"Computer Engg. Paper Presentation", format:"Individual or team of up to 2. Participants present a technical paper on a topic within computer science and emerging technologies, followed by a Q&A round with the judging panel.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Computer Engg. seminar hall", rules:["Abstract must be submitted in advance for shortlisting.","Presentation limited to 10 minutes, strictly timed.","PowerPoint or PDF only; bring your own laptop as backup.","Plagiarism or previously published papers will be disqualified."]},
+  "ce-quiz": {tag:"Computer Engineering · Quiz", title:"Computer Engg. Technical Quiz", format:"A multi-round technical quiz covering programming fundamentals, computer networks, data structures and current technology trends.", team:"2 members per team", duration:"Prelims + finals", venue:"Computer Engg. lab / classroom", rules:["Prelims is a written round; top teams advance to the final buzzer round.","No mobile phones or reference material during the quiz.","Quizmaster's decision on scoring is final.","Tie-breaker questions apply in case of a level score."]},
+  "cv-paper": {tag:"Civil Engineering · Paper Presentation", title:"Civil Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on structural engineering, construction technology, sustainability or related civil engineering themes.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Civil Engg. seminar hall", rules:["Abstract submission required before the shortlisting deadline.","Strictly 10-minute presentation window.","Use of real site data or case studies is encouraged.","Original work only; cite all references used."]},
+  "cv-quiz": {tag:"Civil Engineering · Quiz", title:"Civil Engg. Technical Quiz", format:"Rounds covering construction materials, surveying, structural concepts and general civil engineering awareness.", team:"2 members per team", duration:"Prelims + finals", venue:"Civil Engg. lab / classroom", rules:["Written prelim round followed by an on-stage final.","No reference books or phones allowed during rounds.","Rapid-fire round decided by buzzer order.","Judges'/quizmaster's decision is final."]},
   "ex-paper": {tag:"Electronics Engineering · Paper Presentation", title:"Electronics Engg. Paper Presentation", format:"Individual or team of up to 2. Present a technical paper on electronics, embedded systems, communication or allied topics.", team:"1–2 members", duration:"10 min + 5 min Q&A", venue:"Electronics Engg. seminar hall", rules:["Abstract must be submitted for shortlisting before the deadline.","10-minute time limit, strictly enforced.","Working models or demos may be shown alongside the paper.","Papers must be the participants' original work."]},
   "ex-quiz": {tag:"Electronics Engineering · Quiz", title:"Electronics Engg. Technical Quiz", format:"Covers circuit theory, semiconductor devices, communication systems and current electronics trends across multiple rounds.", team:"2 members per team", duration:"Prelims + finals", venue:"Electronics Engg. lab / classroom", rules:["Written prelim round; shortlisted teams proceed to the final.","No calculators, phones or notes permitted.","Buzzer round order decided by first correct response.","Quizmaster's ruling on all answers is final."]},
   "blind-coding": {tag:"Open Event · Coding", title:"Blind Coding", format:"Participants write code with the monitor switched off (or screen hidden), relying on logic and memory alone, then run it to check correctness once time is up.", team:"1 participant", duration:"20–30 minutes", venue:"Computer lab", rules:["Screen/monitor will be turned off or covered during the coding window.","Language choice (C / C++ / Python / Java) to be confirmed at registration.","Code is compiled and evaluated only after the blind-coding time ends.","Scoring is based on correct output and minimal syntax errors."]},
@@ -665,19 +674,21 @@ document.addEventListener('keydown', (e) => { if(e.key === 'Escape') closeModal(
 
 /* ---------------------------------------------------------------
    GOOGLE SHEET BACKEND
-   1. Create a Google Sheet with header row:
-      Timestamp | Institute | Full Name | Enrollment No | Branch | Semester | Mobile | Email | Event | Receipt No | Amount | Team Members
-   2. In that Sheet: Extensions -> Apps Script, paste the doPost script
+   1. Create a Google Sheet with a tab named "Registrations", header row:
+      Timestamp | Institute | Full Name | Enrollment No | Branch | Semester | Mobile | Email | Event | Coordinator | Receipt No | Amount | Team Members
+      Plus a second tab named "Coordinators", header row:
+      Coordinator Name | Branch | From | To
+   2. In that Sheet: Extensions -> Apps Script, paste the doPost/doGet script
       from the setup notes shared alongside this file, then
       Deploy -> New deployment -> Web app
       (Execute as: Me, Who has access: Anyone).
    3. Paste the deployment URL below, replacing the placeholder.
 ------------------------------------------------------------------*/
-const SHEET_WEB_APP_URL = "https://script.google.com/macros/s/AKfycbxb0c0HjyfOQDxMESSoImmw3XtAM9MsWhAzkEZ1ivrnUkSw9pQJFm5qTcRetIT77ypoJg/exec";
+const SHEET_WEB_APP_URL = "PASTE_YOUR_GOOGLE_APPS_SCRIPT_WEB_APP_URL_HERE";
 
 const fEventSelect = document.getElementById('fEvent');
 const orderedEventKeys = [
-  "co-paper","co-quiz","ce-paper","ce-quiz","ex-paper","ex-quiz",
+  "ce-paper","ce-quiz","cv-paper","cv-quiz","ex-paper","ex-quiz",
   ...OPEN_KEYS
 ];
 orderedEventKeys.forEach(key => {
@@ -687,6 +698,74 @@ orderedEventKeys.forEach(key => {
   opt.setAttribute('data-key', key);
   fEventSelect.appendChild(opt);
 });
+
+const fCoordinatorSelect = document.getElementById('fCoordinator');
+const fReceiptSelect = document.getElementById('fReceipt');
+
+async function loadCoordinators(){
+  if(SHEET_WEB_APP_URL.indexOf('PASTE_YOUR') === 0) return;
+  try {
+    const res = await fetch(SHEET_WEB_APP_URL + '?action=coordinators', { cache: 'no-store' });
+    const data = await res.json();
+    if(data.status === 'ok' && Array.isArray(data.coordinators) && data.coordinators.length){
+      data.coordinators.forEach(c => {
+        const opt = document.createElement('option');
+        opt.value = c.name;
+        opt.textContent = c.name + ' (' + c.branch + ')';
+        fCoordinatorSelect.appendChild(opt);
+      });
+    } else {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'No coordinators set up yet';
+      fCoordinatorSelect.appendChild(opt);
+    }
+  } catch(err){
+    const opt = document.createElement('option');
+    opt.value = '';
+    opt.textContent = 'Could not load coordinators — refresh the page';
+    fCoordinatorSelect.appendChild(opt);
+  }
+}
+
+async function loadReceiptsFor(coordinatorName){
+  fReceiptSelect.disabled = true;
+  fReceiptSelect.innerHTML = '<option value="" disabled selected>Loading receipt numbers…</option>';
+  try {
+    const url = SHEET_WEB_APP_URL + '?action=receipts&coordinator=' + encodeURIComponent(coordinatorName);
+    const res = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+    fReceiptSelect.innerHTML = '';
+    if(data.status === 'ok' && Array.isArray(data.receipts) && data.receipts.length){
+      const placeholder = document.createElement('option');
+      placeholder.value = '';
+      placeholder.disabled = true;
+      placeholder.selected = true;
+      placeholder.textContent = 'Select receipt no.';
+      fReceiptSelect.appendChild(placeholder);
+      data.receipts.forEach(num => {
+        const opt = document.createElement('option');
+        opt.value = num;
+        opt.textContent = num;
+        fReceiptSelect.appendChild(opt);
+      });
+      fReceiptSelect.disabled = false;
+    } else {
+      const opt = document.createElement('option');
+      opt.value = '';
+      opt.textContent = 'No receipt numbers left for this coordinator';
+      fReceiptSelect.appendChild(opt);
+    }
+  } catch(err){
+    fReceiptSelect.innerHTML = '<option value="">Could not load receipt numbers — try again</option>';
+  }
+}
+
+fCoordinatorSelect.addEventListener('change', () => {
+  if(fCoordinatorSelect.value) loadReceiptsFor(fCoordinatorSelect.value);
+});
+
+loadCoordinators();
 
 let activeEventKey = null;
 document.querySelectorAll('[data-event]').forEach(el => {
@@ -732,6 +811,8 @@ regForm.addEventListener('submit', function(e){
     formStatus.textContent = 'Registered! Your entry has been recorded.';
     formStatus.className = 'form-status ok';
     regForm.reset();
+    fReceiptSelect.innerHTML = '<option value="" disabled selected>Select a coordinator first</option>';
+    fReceiptSelect.disabled = true;
   })
   .catch(() => {
     formStatus.textContent = 'Something went wrong. Please try again.';
