@@ -107,7 +107,7 @@ main{padding:56px 0 80px;}
         <button type="submit" id="loginBtn">Log in</button>
       </form>
       <div class="status-msg" id="loginStatus"></div>
-      
+      <p class="security-note">This key is checked against the value stored in your Google Apps Script's Script Properties, not against anything stored in this page — so it isn't visible by viewing the page source. Still, treat it like a shared password: only give it to trusted coordinators, and note that this is a lightweight access gate suited to an internal college event, not a full user-account login system.</p>
     </div>
   </div>
 
@@ -309,6 +309,7 @@ function addReportTable(doc, startY, rows){
     r['Branch'] || '',
     r['Semester'] || '',
     r['Mobile'] || '',
+    r['Coordinator'] || '',
     r['Receipt No'] || '',
     r['Amount'] || '',
     r['Team Members'] || ''
@@ -316,13 +317,13 @@ function addReportTable(doc, startY, rows){
 
   doc.autoTable({
     startY: startY,
-    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Receipt No', 'Amount', 'Team Members']],
+    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members']],
     body: body,
-    styles: { fontSize: 7.5, cellPadding: 4, textColor: [27, 31, 39] },
+    styles: { fontSize: 7, cellPadding: 3.5, textColor: [27, 31, 39] },
     headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255] },
     alternateRowStyles: { fillColor: [244, 240, 230] },
-    columnStyles: { 0: { cellWidth: 18 }, 1: { cellWidth: 90 } },
-    margin: { left: 30, right: 30 }
+    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 } },
+    margin: { left: 25, right: 25 }
   });
 
   const totalAmount = rows.reduce((s, r) => s + (parseFloat(r['Amount']) || 0), 0);
