@@ -320,10 +320,11 @@ function addReportTable(doc, startY, rows){
     startY: startY,
     head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signature']],
     body: body,
-    styles: { fontSize: 7, cellPadding: 3.5, textColor: [27, 31, 39] },
-    headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255] },
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 4.5, textColor: [27, 31, 39], lineColor: [180, 180, 180], lineWidth: 0.5 },
+    headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255], lineColor: [11, 31, 58] },
     alternateRowStyles: { fillColor: [244, 240, 230] },
-    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 }, 11: { cellWidth: 60 } },
+    columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 100 }, 11: { cellWidth: 80 } },
     margin: { left: 25, right: 25 }
   });
 
@@ -339,7 +340,7 @@ function addReportTable(doc, startY, rows){
 
 function generateEventPDF(eventTitle, rows){
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
   const startY = addReportHeader(doc, eventTitle);
   addReportTable(doc, startY, rows);
   const safeName = eventTitle.replace(/[^a-z0-9]+/gi, '_');
@@ -348,7 +349,7 @@ function generateEventPDF(eventTitle, rows){
 
 function generateCombinedPDF(){
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
   let first = true;
 
   ORDERED_KEYS.forEach(key => {
