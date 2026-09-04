@@ -188,9 +188,15 @@ main{padding:56px 0 80px;}
           <label for="fBranch">Branch</label>
           <select id="fBranch" name="branch" required>
             <option value="" disabled selected>Select branch</option>
-            <option value="Computer Engineering">Computer Engineering</option>
-            <option value="Civil Engineering">Civil Engineering</option>
-            <option value="Electronics Engineering">Electronics Engineering</option>
+            <option value="Computer Engineering">Computer Engg.</option>
+            <option value="Civil Engineering">Civil Engg.</option>
+            <option value="Electronics Engineering">Electronics & Telecom Engg.</option>
+            <option value="Electronics Engineering">Electronics Engg.</option>
+            <option value="Electronics Engineering">Mechanical Engg.</option>
+            <option value="Electronics Engineering">Information Technology</option>
+            <option value="Electronics Engineering">Electrical Engg.</option>
+            <option value="Electronics Engineering">Plastic & Polymer Engg.</option>
+            <option value="Electronics Engineering">D.Pharmacy</option>
           </select>
         </div>
         <div class="field">
@@ -573,7 +579,7 @@ async function downloadTeacherEventPDF(eventTitle){
   try {
     const rows = await fetchTeacherEventRows(eventTitle);
     const { jsPDF } = window.jspdf;
-    const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+    const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
     const startY = addReportHeader(doc, eventTitle);
     addReportTable(doc, startY, rows);
     const safeName = eventTitle.replace(/[^a-z0-9]+/gi, '_');
@@ -587,7 +593,7 @@ document.getElementById('teacherCombinedBtn').addEventListener('click', async ()
   const events = session.events || [];
   if(events.length === 0) return;
   const { jsPDF } = window.jspdf;
-  const doc = new jsPDF({ unit: 'pt', format: 'a4' });
+  const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
   let first = true;
   for(const eventTitle of events){
     try {
@@ -661,10 +667,11 @@ function addReportTable(doc, startY, rows){
     startY: startY,
     head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signature']],
     body: body,
-    styles: { fontSize: 7, cellPadding: 3.5, textColor: [27, 31, 39] },
-    headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255] },
+    theme: 'grid',
+    styles: { fontSize: 8, cellPadding: 4.5, textColor: [27, 31, 39], lineColor: [180, 180, 180], lineWidth: 0.5 },
+    headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255], lineColor: [11, 31, 58] },
     alternateRowStyles: { fillColor: [244, 240, 230] },
-    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 }, 11: { cellWidth: 60 } },
+    columnStyles: { 0: { cellWidth: 20 }, 1: { cellWidth: 100 }, 11: { cellWidth: 80 } },
     margin: { left: 25, right: 25 }
   });
 
