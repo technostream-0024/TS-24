@@ -179,7 +179,7 @@ main{padding:56px 0 80px;}
           <input id="fName" name="fullName" type="text" required autocomplete="off">
         </div>
         <div class="field">
-          <label for="fEnroll">Enrollment No. / Registration No.</label>
+          <label for="fEnroll">Enrollment / roll no.</label>
           <input id="fEnroll" name="enrollment" type="text" required>
         </div>
       </div>
@@ -188,15 +188,9 @@ main{padding:56px 0 80px;}
           <label for="fBranch">Branch</label>
           <select id="fBranch" name="branch" required>
             <option value="" disabled selected>Select branch</option>
-            <option value="Computer Engineering">Computer Engg.</option>
-            <option value="Civil Engineering">Civil Engg.</option>
-            <option value="Electronics Engineering">Electronics Engg.</option>
-            <option value="Electronics Engineering">Electronics & Tele. Engg.</option>
-            <option value="Electronics Engineering">Electrical Engg.</option>
-            <option value="Electronics Engineering">Mechanical Engg.</option>
-            <option value="Electronics Engineering">Information Technology</option>
-            <option value="Electronics Engineering">Plastic & Polymer Engg.</option>
-            <option value="Electronics Engineering">D.Pharmacy</option>
+            <option value="Computer Engineering">Computer Engineering</option>
+            <option value="Civil Engineering">Civil Engineering</option>
+            <option value="Electronics Engineering">Electronics Engineering</option>
           </select>
         </div>
         <div class="field">
@@ -206,7 +200,6 @@ main{padding:56px 0 80px;}
             <option value="Second">Second</option>
             <option value="Fourth">Fourth</option>
             <option value="Sixth">Sixth</option>
-            
           </select>
         </div>
       </div>
@@ -660,17 +653,18 @@ function addReportTable(doc, startY, rows){
     r['Coordinator'] || '',
     r['Receipt No'] || '',
     r['Amount'] || '',
-    r['Team Members'] || ''
+    r['Team Members'] || '',
+    ''
   ]);
 
   doc.autoTable({
     startY: startY,
-    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members']],
+    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signature']],
     body: body,
     styles: { fontSize: 7, cellPadding: 3.5, textColor: [27, 31, 39] },
     headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255] },
     alternateRowStyles: { fillColor: [244, 240, 230] },
-    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 } },
+    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 }, 11: { cellWidth: 60 } },
     margin: { left: 25, right: 25 }
   });
 
