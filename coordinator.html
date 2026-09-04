@@ -179,7 +179,7 @@ main{padding:56px 0 80px;}
           <input id="fName" name="fullName" type="text" required autocomplete="off">
         </div>
         <div class="field">
-          <label for="fEnroll">Enrollment / roll no.</label>
+          <label for="fEnroll">Enrollment No. / Registration No.</label>
           <input id="fEnroll" name="enrollment" type="text" required>
         </div>
       </div>
@@ -195,7 +195,12 @@ main{padding:56px 0 80px;}
         </div>
         <div class="field">
           <label for="fSem">Semester</label>
-          <input id="fSem" name="semester" type="text" placeholder="e.g. 5th" required>
+          <select id="fSem" name="semester" required>
+            <option value="" disabled selected>Select semester</option>
+            <option value="Second">Second</option>
+            <option value="Fourth">Fourth</option>
+            <option value="Sixth">Sixth</option>
+          </select>
         </div>
       </div>
       <div class="field-row">
@@ -277,7 +282,8 @@ const EVENTS = {
   "project-expo": {title:"Project Expo"},
   "design-sprint": {title:"Web / App Design Sprint"},
   "treasure-hunt": {title:"Tech Treasure Hunt"},
-  "case-study": {title:"Case Study Challenge"}
+  "case-study": {title:"Case Study Challenge"},
+  "bridge-making": {title:"Bridge Making"}
 };
 const ORDERED_EVENT_KEYS = Object.keys(EVENTS);
 
