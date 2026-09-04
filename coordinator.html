@@ -188,15 +188,9 @@ main{padding:56px 0 80px;}
           <label for="fBranch">Branch</label>
           <select id="fBranch" name="branch" required>
             <option value="" disabled selected>Select branch</option>
-            <option value="Computer Engineering">Computer Engg.</option>
-            <option value="Civil Engineering">Civil Engg.</option>
-            <option value="Electronics Engineering">Electronics & Telecom Engg.</option>
-            <option value="Electronics Engineering">Electronics Engg.</option>
-            <option value="Electronics Engineering">Mechanical Engg.</option>
-            <option value="Electronics Engineering">Information Technology</option>
-            <option value="Electronics Engineering">Electrical Engg.</option>
-            <option value="Electronics Engineering">Plastic & Polymer Engg.</option>
-            <option value="Electronics Engineering">D.Pharmacy</option>
+            <option value="Computer Engineering">Computer Engineering</option>
+            <option value="Civil Engineering">Civil Engineering</option>
+            <option value="Electronics Engineering">Electronics Engineering</option>
           </select>
         </div>
         <div class="field">
@@ -580,7 +574,7 @@ async function downloadTeacherEventPDF(eventTitle){
     const rows = await fetchTeacherEventRows(eventTitle);
     const { jsPDF } = window.jspdf;
     const doc = new jsPDF({ unit: 'pt', format: 'a4', orientation: 'landscape' });
-    const startY = addReportHeader(doc, eventTitle);
+    const startY = addReportHeader(doc, eventTitle, session.name);
     addReportTable(doc, startY, rows);
     const safeName = eventTitle.replace(/[^a-z0-9]+/gi, '_');
     doc.save('Technostream_' + safeName + '_Report.pdf');
@@ -600,7 +594,7 @@ document.getElementById('teacherCombinedBtn').addEventListener('click', async ()
       const rows = await fetchTeacherEventRows(eventTitle);
       if(!first) doc.addPage();
       first = false;
-      const startY = addReportHeader(doc, eventTitle);
+      const startY = addReportHeader(doc, eventTitle, session.name);
       addReportTable(doc, startY, rows);
     } catch(err){ /* skip an event that failed to load rather than aborting the whole report */ }
   }
@@ -608,7 +602,7 @@ document.getElementById('teacherCombinedBtn').addEventListener('click', async ()
 });
 
 /* ---------------- PDF generation (shared) ---------------- */
-function addReportHeader(doc, subtitle){
+function addReportHeader(doc, subtitle, printedBy){
   const pageWidth = doc.internal.pageSize.getWidth();
   try {
     doc.addImage(SHIVAJI_LOGO, 'JPEG', 40, 26, 42, 42);
@@ -638,6 +632,13 @@ function addReportHeader(doc, subtitle){
   doc.setFontSize(12);
   doc.setTextColor(11, 31, 58);
   doc.text('Event Type: ' + subtitle, 40, 100);
+
+  if(printedBy){
+    doc.setFont('helvetica', 'bold');
+    doc.setFontSize(10);
+    doc.setTextColor(11, 31, 58);
+    doc.text('Teacher Coordinator: ' + printedBy, pageWidth - 40, 100, { align: 'right' });
+  }
 
   doc.setFont('helvetica', 'normal');
   doc.setFontSize(9);
