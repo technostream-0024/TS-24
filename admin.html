@@ -107,7 +107,6 @@ main{padding:56px 0 80px;}
         <button type="submit" id="loginBtn">Log in</button>
       </form>
       <div class="status-msg" id="loginStatus"></div>
-      
     </div>
   </div>
 
@@ -161,7 +160,8 @@ const EVENTS = {
   "project-expo": {title:"Project Expo", group:"open"},
   "design-sprint": {title:"Web / App Design Sprint", group:"open"},
   "treasure-hunt": {title:"Tech Treasure Hunt", group:"open"},
-  "case-study": {title:"Case Study Challenge", group:"open"}
+  "case-study": {title:"Case Study Challenge", group:"open"},
+  "bridge-making": {title:"Bridge Making", group:"open"}
 };
 const ORDERED_KEYS = Object.keys(EVENTS);
 
@@ -312,17 +312,18 @@ function addReportTable(doc, startY, rows){
     r['Coordinator'] || '',
     r['Receipt No'] || '',
     r['Amount'] || '',
-    r['Team Members'] || ''
+    r['Team Members'] || '',
+    ''
   ]);
 
   doc.autoTable({
     startY: startY,
-    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members']],
+    head: [['#', 'Institute', 'Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signature']],
     body: body,
     styles: { fontSize: 7, cellPadding: 3.5, textColor: [27, 31, 39] },
     headStyles: { fillColor: [11, 31, 58], textColor: [255, 255, 255] },
     alternateRowStyles: { fillColor: [244, 240, 230] },
-    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 } },
+    columnStyles: { 0: { cellWidth: 16 }, 1: { cellWidth: 80 }, 11: { cellWidth: 60 } },
     margin: { left: 25, right: 25 }
   });
 
