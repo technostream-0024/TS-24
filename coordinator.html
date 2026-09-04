@@ -134,7 +134,9 @@ main{padding:56px 0 80px;}
 
       <form id="loginForm">
         <label for="loginName">Name</label>
-        <input id="loginName" autocomplete="username" required>
+        <select id="loginName" required>
+          <option value="" disabled selected>Loading names…</option>
+        </select>
         <label for="loginPassword">Password</label>
         <input id="loginPassword" type="password" autocomplete="current-password" required>
         <button type="submit" class="submit-btn" id="loginBtn">Log in</button>
@@ -283,16 +285,64 @@ const ORDERED_EVENT_KEYS = Object.keys(EVENTS);
 let selectedRole = 'student';
 const roleStudentBtn = document.getElementById('roleStudentBtn');
 const roleTeacherBtn = document.getElementById('roleTeacherBtn');
+const loginNameSelect = document.getElementById('loginName');
+const nameListCache = {}; // role -> [{name, branch}]
+
+async function loadNamesForRole(role){
+  if(SHEET_WEB_APP_URL.indexOf('PASTE_YOUR') === 0) return;
+
+  loginNameSelect.innerHTML = '<option value="" disabled selected>Loading names…</option>';
+
+  if(nameListCache[role]){
+    populateNameSelect(nameListCache[role]);
+    return;
+  }
+
+  try {
+    const action = role === 'teacher' ? 'teacherNames' : 'studentNames';
+    const res = await fetch(SHEET_WEB_APP_URL + '?action=' + action, { cache: 'no-store' });
+    const data = await res.json();
+    if(data.status === 'ok' && Array.isArray(data.coordinators) && data.coordinators.length){
+      nameListCache[role] = data.coordinators;
+      populateNameSelect(data.coordinators);
+    } else {
+      loginNameSelect.innerHTML = '<option value="" disabled selected>No names set up yet — check with admin</option>';
+    }
+  } catch(err){
+    loginNameSelect.innerHTML = '<option value="" disabled selected>Could not load names — refresh the page</option>';
+  }
+}
+
+function populateNameSelect(list){
+  loginNameSelect.innerHTML = '';
+  const placeholder = document.createElement('option');
+  placeholder.value = '';
+  placeholder.disabled = true;
+  placeholder.selected = true;
+  placeholder.textContent = 'Select your name';
+  loginNameSelect.appendChild(placeholder);
+  list.forEach(c => {
+    const opt = document.createElement('option');
+    opt.value = c.name;
+    opt.textContent = c.name + ' (' + c.branch + ')';
+    loginNameSelect.appendChild(opt);
+  });
+}
+
 roleStudentBtn.addEventListener('click', () => {
   selectedRole = 'student';
   roleStudentBtn.classList.add('active');
   roleTeacherBtn.classList.remove('active');
+  loadNamesForRole('student');
 });
 roleTeacherBtn.addEventListener('click', () => {
   selectedRole = 'teacher';
   roleTeacherBtn.classList.add('active');
   roleStudentBtn.classList.remove('active');
+  loadNamesForRole('teacher');
 });
+
+loadNamesForRole('student');
 
 /* ---------------- Login ---------------- */
 const loginView = document.getElementById('loginView');
