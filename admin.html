@@ -58,6 +58,12 @@ main{padding:56px 0 80px;}
 .logout-btn:hover{background:rgba(181,96,44,0.08);}
 
 .stat-row{display:grid; grid-template-columns:repeat(4,1fr); gap:0; background:#fff; border:1px solid #DED5BE; margin:22px 0 30px;}
+.stats-table{width:100%; border-collapse:collapse; background:#fff; border:1px solid #DED5BE;}
+.stats-table th, .stats-table td{padding:10px 14px; text-align:left; font-size:13.5px; border-bottom:1px dashed #DED5BE;}
+.stats-table th{font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--copper); background:var(--paper-2);}
+.stats-table tr:last-child td{border-bottom:none;}
+.stats-table td:not(:first-child):not(:nth-child(2)), .stats-table th:not(:first-child):not(:nth-child(2)){text-align:right;}
+.empty-note{color:var(--text-mute); font-size:13.5px; margin-top:14px;}
 .stat{padding:18px 20px; border-right:1px dashed #DED5BE;}
 .stat:last-child{border-right:none;}
 .stat .k{font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--copper); margin-bottom:4px;}
@@ -100,13 +106,14 @@ main{padding:56px 0 80px;}
     <div class="login-wrap">
       <div class="eyebrow">Restricted access</div>
       <h2>Admin login</h2>
-      <p>Enter the admin key to view registrations and generate event-wise PDF reports.</p>
+      
       <form id="loginForm">
         <label for="adminKey">Admin key</label>
         <input type="password" id="adminKey" autocomplete="off" required>
         <button type="submit" id="loginBtn">Log in</button>
       </form>
       <div class="status-msg" id="loginStatus"></div>
+      
     </div>
   </div>
 
@@ -128,6 +135,13 @@ main{padding:56px 0 80px;}
 
       <div class="group-title">Open events</div>
       <div class="event-list" id="openList"></div>
+
+      <div class="group-title">Coordinator receipt book usage</div>
+      <table class="stats-table" id="coordUsageTable">
+        <thead><tr><th>Coordinator</th><th>Branch</th><th>Allocated</th><th>Used</th><th>Remaining</th><th>Amount collected</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty-note" id="coordUsageEmptyNote" style="display:none;">No coordinators set up yet.</p>
     </div>
   </div>
 
@@ -165,8 +179,6 @@ const EVENTS = {
 };
 const ORDERED_KEYS = Object.keys(EVENTS);
 
-let allRows = [];
-
 async function fetchRegistrations(key){
   const qs = new URLSearchParams({ action: 'list', key }).toString();
   const url = SHEET_WEB_APP_URL + (SHEET_WEB_APP_URL.indexOf('?') > -1 ? '&' : '?') + qs;
@@ -181,6 +193,9 @@ const loginBtn = document.getElementById('loginBtn');
 const loginView = document.getElementById('loginView');
 const dashboardView = document.getElementById('dashboardView');
 const loadingView = document.getElementById('loadingView');
+
+let allRows = [];
+let adminKeyValue = '';
 
 loginForm.addEventListener('submit', async (e) => {
   e.preventDefault();
@@ -200,6 +215,7 @@ loginForm.addEventListener('submit', async (e) => {
     const data = await fetchRegistrations(key);
     if(data && data.status === 'ok' && Array.isArray(data.rows)){
       allRows = data.rows;
+      adminKeyValue = key;
       loginStatus.textContent = '';
       loginView.style.display = 'none';
       renderDashboard();
@@ -229,6 +245,7 @@ function rowsForEvent(title){
 
 function renderDashboard(){
   dashboardView.style.display = 'block';
+  loadCoordinatorUsage();
 
   const totalAmount = allRows.reduce((s, r) => s + (parseFloat(r['Amount']) || 0), 0);
   document.getElementById('statRow').innerHTML = `
@@ -260,6 +277,36 @@ function renderDashboard(){
 }
 
 document.getElementById('combinedBtn').addEventListener('click', () => generateCombinedPDF());
+
+async function loadCoordinatorUsage(){
+  const tbody = document.querySelector('#coordUsageTable tbody');
+  const emptyNote = document.getElementById('coordUsageEmptyNote');
+  tbody.innerHTML = '<tr><td colspan="6">Loading…</td></tr>';
+  emptyNote.style.display = 'none';
+
+  try {
+    const qs = new URLSearchParams({ action: 'coordinatorUsage', key: adminKeyValue }).toString();
+    const url = SHEET_WEB_APP_URL + (SHEET_WEB_APP_URL.indexOf('?') > -1 ? '&' : '?') + qs;
+    const res = await fetch(url);
+    const data = await res.json();
+    if(data.status !== 'ok') throw new Error(data.message || 'unauthorized');
+
+    tbody.innerHTML = '';
+    if(data.coordinators && data.coordinators.length){
+      data.coordinators.forEach(c => {
+        const tr = document.createElement('tr');
+        tr.innerHTML = `<td>${c.name}</td><td>${c.branch}</td><td style="text-align:right;">${c.allocated}</td><td style="text-align:right;">${c.used}</td><td style="text-align:right;">${c.remaining}</td><td style="text-align:right;">Rs. ${c.amount}</td>`;
+        tbody.appendChild(tr);
+      });
+    } else {
+      emptyNote.style.display = 'block';
+    }
+  } catch(err){
+    tbody.innerHTML = '';
+    emptyNote.textContent = 'Could not load coordinator usage.';
+    emptyNote.style.display = 'block';
+  }
+}
 
 function addReportHeader(doc, subtitle){
   const pageWidth = doc.internal.pageSize.getWidth();
