@@ -92,6 +92,18 @@ main{padding:56px 0 80px;}
 .combined-row{display:flex; justify-content:flex-end; margin-bottom:18px;}
 .combined-btn{background:var(--ink); color:#EFE7D2; border:1px solid var(--gold); border-radius:2px; padding:11px 18px; font-size:13px; font-weight:600;}
 .combined-btn:hover{background:var(--ink-2);}
+.stat-row{display:grid; grid-template-columns:repeat(3,1fr); gap:0; background:#fff; border:1px solid #DED5BE; margin:22px 0 0;}
+.stat{padding:16px 18px; border-right:1px dashed #DED5BE;}
+.stat:last-child{border-right:none;}
+.stat .k{font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--copper); margin-bottom:4px;}
+.stat .v{font-family:'Space Grotesk'; font-weight:700; font-size:20px; color:var(--ink);}
+.group-title{font-family:'IBM Plex Mono'; font-size:11.5px; text-transform:uppercase; letter-spacing:0.1em; color:var(--text-mute); margin:26px 0 12px;}
+.stats-table{width:100%; border-collapse:collapse; background:#fff; border:1px solid #DED5BE;}
+.stats-table th, .stats-table td{padding:10px 14px; text-align:left; font-size:13.5px; border-bottom:1px dashed #DED5BE;}
+.stats-table th{font-family:'IBM Plex Mono'; font-size:10.5px; text-transform:uppercase; letter-spacing:0.06em; color:var(--copper); background:var(--paper-2);}
+.stats-table tr:last-child td{border-bottom:none;}
+.stats-table td:last-child, .stats-table th:last-child{text-align:right;}
+
 .event-list{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px; margin-top:22px;}
 .ev-card{background:#fff; border:1px solid #DED5BE; border-radius:2px; padding:18px; display:flex; flex-direction:column; gap:10px;}
 .ev-card h4{font-size:15px; color:var(--ink);}
@@ -149,12 +161,18 @@ main{padding:56px 0 80px;}
   <div class="wrap" id="studentView" style="display:none;">
     <div class="dash-head">
       <div>
-        <h2>Register a student</h2>
+        <h2 id="studentPaneTitle">Register a student</h2>
         <div class="logged-as">Logged in as <b id="studentNameDisplay"></b> (<span id="studentBranchDisplay"></span>)</div>
       </div>
       <button class="logout-btn" id="studentLogoutBtn">Log out</button>
     </div>
 
+    <div class="role-toggle" style="max-width:420px; margin:20px 0 0;">
+      <button type="button" class="role-btn active" id="studentTabRegister">Register a student</button>
+      <button type="button" class="role-btn" id="studentTabStats">My registrations</button>
+    </div>
+
+    <div id="studentRegisterPane">
     <form class="reg-form" id="regForm">
       <div class="field">
         <label for="fInstitute">Institute name</label>
@@ -188,13 +206,14 @@ main{padding:56px 0 80px;}
           <label for="fBranch">Branch</label>
           <select id="fBranch" name="branch" required>
             <option value="" disabled selected>Select branch</option>
-            <option value="Computer Engineering">Computer Engg.</option>
-            <option value="Civil Engineering">Civil Engg.</option>
-            <option value="Electronics Engineering">Electronics Engg.</option>
-            <option value="Electronics Engineering">Electronics & Telecom Engg.</option>
-            <option value="Electronics Engineering">Mechanical Engg.</option>
-            <option value="Electronics Engineering">Electrical Engg.</option>
-            <option value="Electronics Engineering">Plastic & Polymer Engg.</option>
+            <option value="Computer Engineering">Computer Engineering</option>
+            <option value="Electronics Engineering">Information Technology</option>
+            <option value="Civil Engineering">Civil Engg</option>
+            <option value="Electronics Engineering">Electronics Engg</option>
+            <option value="Electronics Engineering">Electronics & Telecomm Engg</option>
+            <option value="Electronics Engineering">Electrical Engg</option>
+            <option value="Electronics Engineering">Mechanical Engg</option>
+            <option value="Electronics Engineering">Plastic & Polymer Engg</option>
             <option value="Electronics Engineering">D.Pharmacy</option>
           </select>
         </div>
@@ -246,7 +265,19 @@ main{padding:56px 0 80px;}
       </div>
       <p class="form-note">Confirm the receipt number matches what you're physically handing the student before submitting.</p>
     </form>
+    </div>
+
+    <div id="studentStatsPane" style="display:none;">
+      <div class="stat-row" id="studentStatRow"></div>
+      <div class="group-title">Your registrations by event</div>
+      <table class="stats-table" id="studentEventTable">
+        <thead><tr><th>Event</th><th>Registrations</th></tr></thead>
+        <tbody></tbody>
+      </table>
+      <p class="empty-note" id="studentStatsEmptyNote" style="display:none;">No registrations recorded yet.</p>
+    </div>
   </div>
+
 
   <div class="wrap" id="teacherView" style="display:none;">
     <div class="dash-head">
@@ -449,7 +480,63 @@ async function showStudentView(){
   document.getElementById('studentNameDisplay').textContent = session.name;
   document.getElementById('studentBranchDisplay').textContent = session.branch;
   studentView.style.display = 'block';
+  showStudentTab('register');
   await loadMyReceipts();
+}
+
+const studentTabRegister = document.getElementById('studentTabRegister');
+const studentTabStats = document.getElementById('studentTabStats');
+const studentRegisterPane = document.getElementById('studentRegisterPane');
+const studentStatsPane = document.getElementById('studentStatsPane');
+const studentPaneTitle = document.getElementById('studentPaneTitle');
+
+function showStudentTab(tab){
+  const isRegister = tab === 'register';
+  studentTabRegister.classList.toggle('active', isRegister);
+  studentTabStats.classList.toggle('active', !isRegister);
+  studentRegisterPane.style.display = isRegister ? 'block' : 'none';
+  studentStatsPane.style.display = isRegister ? 'none' : 'block';
+  studentPaneTitle.textContent = isRegister ? 'Register a student' : 'My registrations';
+  if(!isRegister) loadMyStats();
+}
+studentTabRegister.addEventListener('click', () => showStudentTab('register'));
+studentTabStats.addEventListener('click', () => showStudentTab('stats'));
+
+async function loadMyStats(){
+  const statRow = document.getElementById('studentStatRow');
+  const tbody = document.querySelector('#studentEventTable tbody');
+  const emptyNote = document.getElementById('studentStatsEmptyNote');
+  statRow.innerHTML = '<div class="stat"><div class="k">Loading…</div><div class="v">—</div></div>';
+  tbody.innerHTML = '';
+  emptyNote.style.display = 'none';
+
+  try {
+    const url = SHEET_WEB_APP_URL + '?action=myStats' +
+      '&name=' + encodeURIComponent(session.name) + '&password=' + encodeURIComponent(session.password);
+    const res = await fetch(url, { cache: 'no-store' });
+    const data = await res.json();
+    if(data.status !== 'ok') throw new Error(data.message || 'Could not load your stats.');
+
+    statRow.innerHTML = `
+      <div class="stat"><div class="k">Total registrations</div><div class="v">${data.totalRegistrations}</div></div>
+      <div class="stat"><div class="k">Amount collected</div><div class="v">Rs. ${data.amountCollected}</div></div>
+      <div class="stat"><div class="k">Receipts remaining</div><div class="v">${data.receiptsRemaining} of ${data.receiptsAllocated}</div></div>
+    `;
+
+    if(data.eventCounts && data.eventCounts.length){
+      data.eventCounts
+        .sort((a,b) => b.count - a.count)
+        .forEach(ec => {
+          const tr = document.createElement('tr');
+          tr.innerHTML = `<td>${ec.event}</td><td>${ec.count}</td>`;
+          tbody.appendChild(tr);
+        });
+    } else {
+      emptyNote.style.display = 'block';
+    }
+  } catch(err){
+    statRow.innerHTML = '<div class="stat"><div class="k">Error</div><div class="v" style="font-size:13px;">Could not load stats</div></div>';
+  }
 }
 
 async function loadMyReceipts(){
