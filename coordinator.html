@@ -107,6 +107,19 @@ main{padding:56px 0 80px;}
 .stats-table td:last-child, .stats-table th:last-child{text-align:right;}
 
 .event-list{display:grid; grid-template-columns:repeat(auto-fill, minmax(260px,1fr)); gap:14px; margin-top:22px;}
+
+/* ---- certificate panel ---- */
+.cert-panel{display:grid; grid-template-columns:340px 1fr; gap:24px; margin-top:22px; align-items:start;}
+.cert-controls{display:flex; flex-direction:column; gap:14px;}
+.cert-controls .field select, .cert-controls .field input[type="file"], .cert-controls .field input[type="number"]{
+  border:1px solid #D8D0BC; border-radius:2px; padding:9px 10px; font-size:13.5px; width:100%; background:#fff;
+}
+.cert-controls .field input[type="color"]{width:60px; height:38px; border:1px solid #D8D0BC; border-radius:2px; padding:2px; background:#fff;}
+.cert-placing-group{display:flex; gap:16px; margin-top:4px;}
+.cert-radio, .cert-checkbox{display:flex; align-items:center; gap:7px; font-size:13.5px; color:var(--text-dark); cursor:pointer;}
+.cert-preview-wrap{background:#fff; border:1px solid #DED5BE; padding:14px; text-align:center; min-height:200px; display:flex; align-items:center; justify-content:center;}
+#certPreviewCanvas{max-width:100%; height:auto; display:none; cursor:crosshair; border:1px solid #EDE7D6;}
+@media (max-width:800px){ .cert-panel{grid-template-columns:1fr;} }
 .ev-card{background:#fff; border:1px solid #DED5BE; border-radius:2px; padding:18px; display:flex; flex-direction:column; gap:10px;}
 .ev-card h4{font-size:15px; color:var(--ink);}
 .ev-card .meta{display:flex; gap:16px; font-family:'IBM Plex Mono'; font-size:11px; color:var(--text-mute); text-transform:uppercase;}
@@ -184,9 +197,10 @@ main{padding:56px 0 80px;}
           <option value="Dr. Panjabrao Deshmukh Girl's Polytechnic, Amravati">Dr. Panjabrao Deshmukh Girl's Polytechnic, Amravati</option>
           <option value="Govt. Polytechnic, Amravati">Govt. Polytechnic, Amravati</option>
           <option value="Govt. Polytechnic, Achalpur">Govt. Polytechnic, Achalpur</option>
+          <option value="Govt. Polytechnic, Achalpur">Govt. Polytechnic, Murtizapur</option>
           <option value="Dr. Rajendra Gode Polytechnic, Amravati">Dr. Rajendra Gode Polytechnic, Amravati</option>
           <option value="Takshashila Polytechnic, Amravati">Takshashila Polytechnic, Amravati</option>
-          <option value="Takshashila Polytechnic, Amravati">Vidyabharti Polytechnic, Amravati</option>
+          <option value="Govt. Polytechnic, Achalpur">Govt. Polytechnic, Yavatmal</option>
           <option value="__other__">Other (type it in)</option>
         </select>
       </div>
@@ -200,7 +214,7 @@ main{padding:56px 0 80px;}
           <input id="fName" name="fullName" type="text" required autocomplete="off">
         </div>
         <div class="field">
-          <label for="fEnroll">Enrollment no. / Registration no.</label>
+          <label for="fEnroll">Enrollment / roll no.</label>
           <input id="fEnroll" name="enrollment" type="text" required>
         </div>
       </div>
@@ -282,16 +296,85 @@ main{padding:56px 0 80px;}
   <div class="wrap" id="teacherView" style="display:none;">
     <div class="dash-head">
       <div>
-        <h2>Assigned event reports</h2>
+        <h2 id="teacherPaneTitle">Assigned event reports</h2>
         <div class="logged-as">Logged in as <b id="teacherNameDisplay"></b> (<span id="teacherBranchDisplay"></span>)</div>
       </div>
       <button class="logout-btn" id="teacherLogoutBtn">Log out</button>
     </div>
-    <div class="combined-row">
-      <button class="combined-btn" id="teacherCombinedBtn">Download combined report (my events) ▸</button>
+
+    <div class="role-toggle" style="max-width:420px; margin:20px 0 0;">
+      <button type="button" class="role-btn active" id="teacherTabReports">Event reports</button>
+      <button type="button" class="role-btn" id="teacherTabCerts">Generate certificates</button>
     </div>
-    <div class="event-list" id="teacherEventList"></div>
-    <p class="empty-note" id="teacherEmptyNote" style="display:none;">No events have been assigned to you yet — check with your admin.</p>
+
+    <div id="teacherReportsPane">
+      <div class="combined-row">
+        <button class="combined-btn" id="teacherCombinedBtn">Download combined report (my events) ▸</button>
+      </div>
+      <div class="event-list" id="teacherEventList"></div>
+      <p class="empty-note" id="teacherEmptyNote" style="display:none;">No events have been assigned to you yet — check with your admin.</p>
+    </div>
+
+    <div id="teacherCertsPane" style="display:none;">
+      <div class="cert-panel">
+        <div class="cert-controls">
+          <div class="field">
+            <label for="certEventSelect">Event</label>
+            <select id="certEventSelect">
+              <option value="" disabled selected>Select event</option>
+            </select>
+          </div>
+
+          <div class="field">
+            <label for="certTemplateInput">Certificate template (image)</label>
+            <input id="certTemplateInput" type="file" accept="image/*">
+          </div>
+
+          <div class="field">
+            <label>Now click on the preview to place text</label>
+            <div class="cert-placing-group">
+              <label class="cert-radio"><input type="radio" name="certPlacing" value="name" checked> Name position</label>
+              <label class="cert-radio"><input type="radio" name="certPlacing" value="details"> Details line position</label>
+            </div>
+          </div>
+
+          <div class="field-row">
+            <div class="field">
+              <label for="certNameSize">Name font size (pt)</label>
+              <input id="certNameSize" type="number" value="30" min="8" max="120">
+            </div>
+            <div class="field">
+              <label for="certNameColor">Name color</label>
+              <input id="certNameColor" type="color" value="#0B1F3A">
+            </div>
+          </div>
+
+          <div class="field">
+            <label class="cert-checkbox"><input type="checkbox" id="certIncludeDetails" checked> Also print a details line (Institute • Event)</label>
+          </div>
+
+          <div class="field-row" id="certDetailsStyleRow">
+            <div class="field">
+              <label for="certDetailsSize">Details font size (pt)</label>
+              <input id="certDetailsSize" type="number" value="14" min="6" max="60">
+            </div>
+            <div class="field">
+              <label for="certDetailsColor">Details color</label>
+              <input id="certDetailsColor" type="color" value="#5B6472">
+            </div>
+          </div>
+
+          <button type="button" class="cta-btn" id="certGenerateBtn" disabled>Generate certificates PDF ▸</button>
+          <span class="form-status" id="certStatus"></span>
+          <p class="form-note">One certificate page is created per participant — a team of 4 produces 4 separate pages in the same PDF.</p>
+        </div>
+
+        <div class="cert-preview-wrap">
+          <canvas id="certPreviewCanvas"></canvas>
+          <p class="empty-note" id="certPreviewEmptyNote">Upload a template image to see it here.</p>
+        </div>
+      </div>
+    </div>
   </div>
 </main>
 
@@ -619,7 +702,37 @@ function showTeacherView(){
   document.getElementById('teacherNameDisplay').textContent = session.name;
   document.getElementById('teacherBranchDisplay').textContent = session.branch;
   teacherView.style.display = 'block';
+  showTeacherTab('reports');
   renderTeacherEvents();
+  populateCertEventSelect();
+}
+
+const teacherTabReports = document.getElementById('teacherTabReports');
+const teacherTabCerts = document.getElementById('teacherTabCerts');
+const teacherReportsPane = document.getElementById('teacherReportsPane');
+const teacherCertsPane = document.getElementById('teacherCertsPane');
+const teacherPaneTitle = document.getElementById('teacherPaneTitle');
+
+function showTeacherTab(tab){
+  const isReports = tab === 'reports';
+  teacherTabReports.classList.toggle('active', isReports);
+  teacherTabCerts.classList.toggle('active', !isReports);
+  teacherReportsPane.style.display = isReports ? 'block' : 'none';
+  teacherCertsPane.style.display = isReports ? 'none' : 'block';
+  teacherPaneTitle.textContent = isReports ? 'Assigned event reports' : 'Generate certificates';
+}
+teacherTabReports.addEventListener('click', () => showTeacherTab('reports'));
+teacherTabCerts.addEventListener('click', () => showTeacherTab('certs'));
+
+function populateCertEventSelect(){
+  const sel = document.getElementById('certEventSelect');
+  sel.innerHTML = '<option value="" disabled selected>Select event</option>';
+  (session.events || []).forEach(ev => {
+    const opt = document.createElement('option');
+    opt.value = ev;
+    opt.textContent = ev;
+    sel.appendChild(opt);
+  });
 }
 
 function renderTeacherEvents(){
@@ -688,6 +801,177 @@ document.getElementById('teacherCombinedBtn').addEventListener('click', async ()
   }
   doc.save('Technostream_MyEvents_Combined_Report.pdf');
 });
+
+/* ---------------- Certificate generation ---------------- */
+let certTemplateDataUrl = null;
+let certTemplateImg = null;   // Image object, gives natural width/height
+let certNamePos = null;       // {x, y} in ORIGINAL image pixel coordinates
+let certDetailsPos = null;    // {x, y} in ORIGINAL image pixel coordinates
+let certCanvasScale = 1;      // displayed size / natural size
+
+const certCanvas = document.getElementById('certPreviewCanvas');
+const certCtx = certCanvas.getContext('2d');
+const certPreviewEmptyNote = document.getElementById('certPreviewEmptyNote');
+const certGenerateBtn = document.getElementById('certGenerateBtn');
+const certStatus = document.getElementById('certStatus');
+const certIncludeDetails = document.getElementById('certIncludeDetails');
+const certDetailsStyleRow = document.getElementById('certDetailsStyleRow');
+
+certIncludeDetails.addEventListener('change', () => {
+  certDetailsStyleRow.style.display = certIncludeDetails.checked ? 'grid' : 'none';
+  if(!certIncludeDetails.checked) certDetailsPos = null;
+  updateCertGenerateEnabled();
+  redrawCertCanvas();
+});
+
+document.getElementById('certTemplateInput').addEventListener('change', (e) => {
+  const file = e.target.files[0];
+  if(!file) return;
+  const reader = new FileReader();
+  reader.onload = (ev) => {
+    certTemplateDataUrl = ev.target.result;
+    const img = new Image();
+    img.onload = () => {
+      certTemplateImg = img;
+      certNamePos = null;
+      certDetailsPos = null;
+      const maxDisplayWidth = 560;
+      certCanvasScale = Math.min(1, maxDisplayWidth / img.naturalWidth);
+      certCanvas.width = img.naturalWidth * certCanvasScale;
+      certCanvas.height = img.naturalHeight * certCanvasScale;
+      certCanvas.style.display = 'block';
+      certPreviewEmptyNote.style.display = 'none';
+      redrawCertCanvas();
+      updateCertGenerateEnabled();
+    };
+    img.src = certTemplateDataUrl;
+  };
+  reader.readAsDataURL(file);
+});
+
+function redrawCertCanvas(){
+  if(!certTemplateImg) return;
+  certCtx.clearRect(0, 0, certCanvas.width, certCanvas.height);
+  certCtx.drawImage(certTemplateImg, 0, 0, certCanvas.width, certCanvas.height);
+
+  function drawMarker(pos, color, label){
+    if(!pos) return;
+    const x = pos.x * certCanvasScale;
+    const y = pos.y * certCanvasScale;
+    certCtx.strokeStyle = color;
+    certCtx.lineWidth = 2;
+    certCtx.beginPath();
+    certCtx.moveTo(x - 8, y); certCtx.lineTo(x + 8, y);
+    certCtx.moveTo(x, y - 8); certCtx.lineTo(x, y + 8);
+    certCtx.stroke();
+    certCtx.font = '11px sans-serif';
+    certCtx.fillStyle = color;
+    certCtx.fillText(label, x + 10, y - 10);
+  }
+  drawMarker(certNamePos, '#B5602C', 'Name');
+  drawMarker(certDetailsPos, '#0B1F3A', 'Details');
+}
+
+certCanvas.addEventListener('click', (e) => {
+  if(!certTemplateImg) return;
+  const rect = certCanvas.getBoundingClientRect();
+  const displayX = (e.clientX - rect.left) * (certCanvas.width / rect.width);
+  const displayY = (e.clientY - rect.top) * (certCanvas.height / rect.height);
+  const originalPos = { x: displayX / certCanvasScale, y: displayY / certCanvasScale };
+
+  const placing = document.querySelector('input[name="certPlacing"]:checked').value;
+  if(placing === 'name'){
+    certNamePos = originalPos;
+  } else {
+    certDetailsPos = originalPos;
+  }
+  redrawCertCanvas();
+  updateCertGenerateEnabled();
+});
+
+function updateCertGenerateEnabled(){
+  const eventChosen = !!document.getElementById('certEventSelect').value;
+  const nameReady = !!certNamePos;
+  const detailsReady = !certIncludeDetails.checked || !!certDetailsPos;
+  certGenerateBtn.disabled = !(certTemplateImg && eventChosen && nameReady && detailsReady);
+}
+document.getElementById('certEventSelect').addEventListener('change', updateCertGenerateEnabled);
+
+certGenerateBtn.addEventListener('click', async () => {
+  const eventTitle = document.getElementById('certEventSelect').value;
+  if(!eventTitle || !certTemplateImg || !certNamePos) return;
+
+  certGenerateBtn.disabled = true;
+  certStatus.textContent = 'Loading registrations…';
+  certStatus.className = 'form-status';
+
+  try {
+    const rows = await fetchTeacherEventRows(eventTitle);
+    if(rows.length === 0){
+      certStatus.textContent = 'No registrations found for this event yet.';
+      certStatus.className = 'form-status err';
+      certGenerateBtn.disabled = false;
+      return;
+    }
+
+    const participants = [];
+    rows.forEach(r => {
+      const institute = r['Institute'] || '';
+      const primaryName = (r['Full Name'] || '').trim();
+      if(primaryName) participants.push({ name: primaryName, institute });
+      const team = (r['Team Members'] || '')
+        .split('\n')
+        .map(s => s.trim())
+        .filter(Boolean);
+      team.forEach(name => participants.push({ name, institute }));
+    });
+
+    certStatus.textContent = 'Generating ' + participants.length + ' certificate(s)…';
+
+    const { jsPDF } = window.jspdf;
+    const w = certTemplateImg.naturalWidth;
+    const h = certTemplateImg.naturalHeight;
+    const doc = new jsPDF({ unit: 'pt', format: [w, h], orientation: w >= h ? 'landscape' : 'portrait' });
+
+    const nameSize = parseFloat(document.getElementById('certNameSize').value) || 30;
+    const nameColor = hexToRgb(document.getElementById('certNameColor').value);
+    const detailsSize = parseFloat(document.getElementById('certDetailsSize').value) || 14;
+    const detailsColor = hexToRgb(document.getElementById('certDetailsColor').value);
+
+    participants.forEach((p, i) => {
+      if(i > 0) doc.addPage([w, h], w >= h ? 'landscape' : 'portrait');
+      doc.addImage(certTemplateDataUrl, 'JPEG', 0, 0, w, h);
+
+      doc.setFont('helvetica', 'bold');
+      doc.setFontSize(nameSize);
+      doc.setTextColor(nameColor.r, nameColor.g, nameColor.b);
+      doc.text(p.name, certNamePos.x, certNamePos.y, { align: 'center' });
+
+      if(certIncludeDetails.checked && certDetailsPos){
+        doc.setFont('helvetica', 'normal');
+        doc.setFontSize(detailsSize);
+        doc.setTextColor(detailsColor.r, detailsColor.g, detailsColor.b);
+        doc.text(p.institute + ' • ' + eventTitle, certDetailsPos.x, certDetailsPos.y, { align: 'center' });
+      }
+    });
+
+    const safeName = eventTitle.replace(/[^a-z0-9]+/gi, '_');
+    doc.save('Technostream_' + safeName + '_Certificates.pdf');
+    certStatus.textContent = 'Done — ' + participants.length + ' certificate(s) generated.';
+    certStatus.className = 'form-status ok';
+  } catch(err){
+    certStatus.textContent = 'Could not generate certificates: ' + err.message;
+    certStatus.className = 'form-status err';
+  } finally {
+    certGenerateBtn.disabled = false;
+  }
+});
+
+function hexToRgb(hex){
+  const clean = hex.replace('#', '');
+  const num = parseInt(clean, 16);
+  return { r: (num >> 16) & 255, g: (num >> 8) & 255, b: num & 255 };
+}
 
 /* ---------------- PDF generation (shared) ---------------- */
 function addReportHeader(doc, subtitle, printedBy){
