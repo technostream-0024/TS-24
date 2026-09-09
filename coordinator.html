@@ -185,7 +185,7 @@ main{padding:56px 0 80px;}
         <button type="submit" class="submit-btn" id="loginBtn">Log in</button>
       </form>
       <div class="status-msg" id="loginStatus"></div>
-      <p class="security-note">Don't share your password with anyone outside your role.</p>
+      <p class="security-note">Your name and password are checked against the coordinator list your admin set up in the Google Sheet — nothing is stored in this page itself. Don't share your password with anyone outside your role.</p>
     </div>
   </div>
 
@@ -249,7 +249,6 @@ main{padding:56px 0 80px;}
             <option value="Mechanical Engineering">Mechanical Engg</option>
             <option value="Plastic & Polymer Engineering">Plastic & Polymer Engg</option>
             <option value="Diploma Pharmacy">D.Pharmacy</option>
-
           </select>
         </div>
         <div class="field">
@@ -280,7 +279,7 @@ main{padding:56px 0 80px;}
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="fAmount">Amount Paid (₹)</label>
+          <label for="fAmount">Amount paid (₹)</label>
           <input id="fAmount" name="amount" type="number" min="0" step="1" placeholder="e.g. 100" required>
         </div>
         <div class="field">
@@ -350,6 +349,16 @@ main{padding:56px 0 80px;}
           </div>
 
           <div class="field">
+            <label for="certFontStyle">Font style (applies to all fields)</label>
+            <select id="certFontStyle">
+              <option value="normal" selected>Normal</option>
+              <option value="bold">Bold</option>
+              <option value="italic">Italic</option>
+              <option value="bolditalic">Bold Italic</option>
+            </select>
+          </div>
+
+          <div class="field">
             <label>Fields to print</label>
             <p class="form-note" style="margin:0 0 8px;">Tick a field, click its "Place" button, then click the preview once to drop it. After that, click and drag its marker anywhere on the preview to fine-tune the exact spot.</p>
             <div id="certFieldList"></div>
@@ -359,7 +368,7 @@ main{padding:56px 0 80px;}
 
           <button type="button" class="cta-btn" id="certGenerateBtn" disabled>Generate certificates PDF ▸</button>
           <span class="form-status" id="certStatus"></span>
-          <p class="form-note">Certificates are created per participant in the same PDF.</p>
+          <p class="form-note">One certificate page is created per participant — a team of 4 produces 4 separate pages in the same PDF.</p>
         </div>
 
         <div class="cert-preview-wrap">
@@ -968,7 +977,10 @@ function redrawCertCanvas(){
     // WYSIWYG sample text, center-anchored both ways to match the PDF's rendering.
     const sample = f.key === 'event' ? (eventTitle || 'Event Name') : CERT_SAMPLE_TEXT[f.key];
     const displaySize = Math.max(6, state.size * certCanvasScale);
-    certCtx.font = (f.key === 'name' ? 'bold ' : '') + displaySize + 'px Helvetica, Arial, sans-serif';
+    const fontStyle = document.getElementById('certFontStyle').value;
+    const canvasFontWeight = (fontStyle === 'bold' || fontStyle === 'bolditalic') ? 'bold ' : '';
+    const canvasFontSlant = (fontStyle === 'italic' || fontStyle === 'bolditalic') ? 'italic ' : '';
+    certCtx.font = canvasFontSlant + canvasFontWeight + displaySize + 'px Helvetica, Arial, sans-serif';
     certCtx.textAlign = 'center';
     certCtx.textBaseline = 'middle';
     certCtx.fillText(sample, x, y);
@@ -1055,6 +1067,7 @@ function updateCertGenerateEnabled(){
   const allEnabledPlaced = CERT_FIELDS.every(f => !certFieldState[f.key].enabled || !!certFieldState[f.key].pos);
   certGenerateBtn.disabled = !(certTemplateImg && eventChosen && allEnabledPlaced);
 }
+document.getElementById('certFontStyle').addEventListener('change', redrawCertCanvas);
 document.getElementById('certEventSelect').addEventListener('change', () => { updateCertGenerateEnabled(); redrawCertCanvas(); });
 
 function certFieldValue(key, p, eventTitle){
@@ -1109,7 +1122,7 @@ certGenerateBtn.addEventListener('click', async () => {
       activeFields.forEach(f => {
         const state = certFieldState[f.key];
         const rgb = hexToRgb(state.color);
-        doc.setFont('helvetica', f.key === 'name' ? 'bold' : 'normal');
+        doc.setFont('helvetica', document.getElementById('certFontStyle').value);
         doc.setFontSize(state.size);
         doc.setTextColor(rgb.r, rgb.g, rgb.b);
         doc.text(certFieldValue(f.key, p, eventTitle), state.pos.x, state.pos.y, { align: 'center', baseline: 'middle' });
