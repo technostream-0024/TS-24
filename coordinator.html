@@ -226,7 +226,7 @@ main{padding:56px 0 80px;}
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="fName">First & Last Name</label>
+          <label for="fName">Full Name</label>
           <input id="fName" name="fullName" type="text" required autocomplete="off">
         </div>
         <div class="field">
@@ -1084,7 +1084,7 @@ certGenerateBtn.addEventListener('click', async () => {
       const institute = r['Institute'] || '';
       const branch = r['Branch'] || '';
       const enrollment = r['Enrollment No'] || '';
-      const primaryName = (r['First & Last Name'] || '').trim();
+      const primaryName = (r['Full Name'] || '').trim();
       if(primaryName) participants.push({ name: primaryName, institute, branch, enrollment });
       const team = (r['Team Members'] || '')
         .split('\n')
@@ -1185,7 +1185,7 @@ function addReportTable(doc, startY, rows){
   const body = rows.map((r, i) => [
     i + 1,
     r['Institute'] || '',
-    r['First & Last Name'] || '',
+    r['Full Name'] || '',
     r['Enrollment No'] || '',
     r['Branch'] || '',
     r['Semester'] || '',
@@ -1199,7 +1199,7 @@ function addReportTable(doc, startY, rows){
 
   doc.autoTable({
     startY: startY,
-    head: [['#', 'Institute', 'First & Last Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signatures']],
+    head: [['#', 'Institute', 'Full Name', 'Enrollment', 'Branch', 'Sem', 'Mobile', 'Coordinator', 'Receipt No', 'Amount', 'Team Members', 'Signatures']],
     body: body,
     theme: 'grid',
     styles: { fontSize: 8, cellPadding: 4.5, textColor: [27, 31, 39], lineColor: [180, 180, 180], lineWidth: 0.5 },
