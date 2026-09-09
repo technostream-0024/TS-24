@@ -854,7 +854,7 @@ function buildCertFieldList(){
       redrawCertCanvas();
       updateCertGenerateEnabled();
     });
-    sizeInput.addEventListener('input', () => { state.size = parseFloat(sizeInput.value) || state.size; });
+    sizeInput.addEventListener('input', () => { state.size = parseFloat(sizeInput.value) || state.size; redrawCertCanvas(); });
     colorInput.addEventListener('input', () => { state.color = colorInput.value; redrawCertCanvas(); });
     placeBtn.addEventListener('click', () => {
       if(!state.enabled) return;
@@ -919,7 +919,7 @@ document.getElementById('certTemplateInput').addEventListener('change', (e) => {
       certTemplateImg = img;
       CERT_FIELDS.forEach(f => { certFieldState[f.key].pos = null; });
       setActivePlacingKey(null);
-      const maxDisplayWidth = 560;
+      const maxDisplayWidth = 720;
       certCanvasScale = Math.min(1, maxDisplayWidth / img.naturalWidth);
       certCanvas.width = img.naturalWidth * certCanvasScale;
       certCanvas.height = img.naturalHeight * certCanvasScale;
@@ -934,25 +934,48 @@ document.getElementById('certTemplateInput').addEventListener('change', (e) => {
   reader.readAsDataURL(file);
 });
 
+const CERT_SAMPLE_TEXT = {
+  name: 'Participant Name',
+  institute: 'Institute Name',
+  event: null, // filled with the real selected event title when available
+  branch: 'Branch',
+  enrollment: 'Enrollment No.'
+};
+
 function redrawCertCanvas(){
   if(!certTemplateImg) return;
   certCtx.clearRect(0, 0, certCanvas.width, certCanvas.height);
   certCtx.drawImage(certTemplateImg, 0, 0, certCanvas.width, certCanvas.height);
+
+  const eventTitle = document.getElementById('certEventSelect').value;
 
   CERT_FIELDS.forEach(f => {
     const state = certFieldState[f.key];
     if(!state.enabled || !state.pos) return;
     const x = state.pos.x * certCanvasScale;
     const y = state.pos.y * certCanvasScale;
-    certCtx.strokeStyle = state.color;
-    certCtx.lineWidth = 2;
-    certCtx.beginPath();
-    certCtx.moveTo(x - 8, y); certCtx.lineTo(x + 8, y);
-    certCtx.moveTo(x, y - 8); certCtx.lineTo(x, y + 8);
-    certCtx.stroke();
-    certCtx.font = '11px sans-serif';
+
+    // Small anchor dot at the exact point stored — this is what maps 1:1 to the PDF.
     certCtx.fillStyle = state.color;
-    certCtx.fillText(f.label, x + 10, y - 10);
+    certCtx.beginPath();
+    certCtx.arc(x, y, 2.5, 0, Math.PI * 2);
+    certCtx.fill();
+
+    // WYSIWYG sample text, center-anchored both ways to match the PDF's rendering.
+    const sample = f.key === 'event' ? (eventTitle || 'Event Name') : CERT_SAMPLE_TEXT[f.key];
+    const displaySize = Math.max(6, state.size * certCanvasScale);
+    certCtx.font = (f.key === 'name' ? 'bold ' : '') + displaySize + 'px Helvetica, Arial, sans-serif';
+    certCtx.textAlign = 'center';
+    certCtx.textBaseline = 'middle';
+    certCtx.fillText(sample, x, y);
+
+    // Small dashed outline so an empty/edge case is still visible even if text is tiny.
+    certCtx.strokeStyle = state.color;
+    certCtx.lineWidth = 1;
+    certCtx.setLineDash([3, 3]);
+    const w = certCtx.measureText(sample).width;
+    certCtx.strokeRect(x - w/2 - 4, y - displaySize/2 - 4, w + 8, displaySize + 8);
+    certCtx.setLineDash([]);
   });
 }
 
@@ -997,17 +1020,18 @@ certCanvas.addEventListener('mousedown', (e) => {
   }
 });
 
-certCanvas.addEventListener('mousemove', (e) => {
+window.addEventListener('mousemove', (e) => {
+  if(!certDraggingKey) return;
   const pt = toCanvasCoords(e);
+  const clampedX = Math.max(0, Math.min(certCanvas.width, pt.x));
+  const clampedY = Math.max(0, Math.min(certCanvas.height, pt.y));
+  certFieldState[certDraggingKey].pos = { x: clampedX / certCanvasScale, y: clampedY / certCanvasScale };
+  redrawCertCanvas();
+});
 
-  if(certDraggingKey){
-    const clampedX = Math.max(0, Math.min(certCanvas.width, pt.x));
-    const clampedY = Math.max(0, Math.min(certCanvas.height, pt.y));
-    certFieldState[certDraggingKey].pos = { x: clampedX / certCanvasScale, y: clampedY / certCanvasScale };
-    redrawCertCanvas();
-    return;
-  }
-
+certCanvas.addEventListener('mousemove', (e) => {
+  if(certDraggingKey) return; // movement while dragging is handled by the window listener above
+  const pt = toCanvasCoords(e);
   const hoverKey = findFieldAtPoint(pt.x, pt.y);
   certCanvas.style.cursor = hoverKey ? 'grab' : (certActivePlacingKey ? 'crosshair' : 'default');
 });
@@ -1027,7 +1051,7 @@ function updateCertGenerateEnabled(){
   const allEnabledPlaced = CERT_FIELDS.every(f => !certFieldState[f.key].enabled || !!certFieldState[f.key].pos);
   certGenerateBtn.disabled = !(certTemplateImg && eventChosen && allEnabledPlaced);
 }
-document.getElementById('certEventSelect').addEventListener('change', updateCertGenerateEnabled);
+document.getElementById('certEventSelect').addEventListener('change', () => { updateCertGenerateEnabled(); redrawCertCanvas(); });
 
 function certFieldValue(key, p, eventTitle){
   if(key === 'event') return eventTitle;
@@ -1084,7 +1108,7 @@ certGenerateBtn.addEventListener('click', async () => {
         doc.setFont('helvetica', f.key === 'name' ? 'bold' : 'normal');
         doc.setFontSize(state.size);
         doc.setTextColor(rgb.r, rgb.g, rgb.b);
-        doc.text(certFieldValue(f.key, p, eventTitle), state.pos.x, state.pos.y, { align: 'center' });
+        doc.text(certFieldValue(f.key, p, eventTitle), state.pos.x, state.pos.y, { align: 'center', baseline: 'middle' });
       });
     });
 
