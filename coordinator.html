@@ -224,11 +224,11 @@ main{padding:56px 0 80px;}
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="fName">Full name</label>
+          <label for="fName">First & Last Name</label>
           <input id="fName" name="fullName" type="text" required autocomplete="off">
         </div>
         <div class="field">
-          <label for="fEnroll">Enrollment / roll no.</label>
+          <label for="fEnroll">Enrollment / Registration no.</label>
           <input id="fEnroll" name="enrollment" type="text" required>
         </div>
       </div>
@@ -244,6 +244,7 @@ main{padding:56px 0 80px;}
             <option value="Electronics Engineering">Electronics & Telecom Engg</option>
             <option value="Electronics Engineering">Electrical Engg</option>
             <option value="Electronics Engineering">Mechanical Engg</option>
+            <option value="Electronics Engineering">Plastic & Polymer Engg</option>
             <option value="Electronics Engineering">D.Pharmacy</option>
 
           </select>
@@ -276,7 +277,7 @@ main{padding:56px 0 80px;}
       </div>
       <div class="field-row">
         <div class="field">
-          <label for="fAmount">Amount paid (₹)</label>
+          <label for="fAmount">Amount Paid (₹)</label>
           <input id="fAmount" name="amount" type="number" min="0" step="1" placeholder="e.g. 100" required>
         </div>
         <div class="field">
@@ -355,7 +356,7 @@ main{padding:56px 0 80px;}
 
           <button type="button" class="cta-btn" id="certGenerateBtn" disabled>Generate certificates PDF ▸</button>
           <span class="form-status" id="certStatus"></span>
-          <p class="form-note">One certificate page is created per participant — a team of 4 produces 4 separate pages in the same PDF.</p>
+          <p class="form-note">Certificates are created per participant in the same PDF.</p>
         </div>
 
         <div class="cert-preview-wrap">
@@ -1080,7 +1081,7 @@ certGenerateBtn.addEventListener('click', async () => {
       const institute = r['Institute'] || '';
       const branch = r['Branch'] || '';
       const enrollment = r['Enrollment No'] || '';
-      const primaryName = (r['Full Name'] || '').trim();
+      const primaryName = (r['First & Last Name'] || '').trim();
       if(primaryName) participants.push({ name: primaryName, institute, branch, enrollment });
       const team = (r['Team Members'] || '')
         .split('\n')
